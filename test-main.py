@@ -1,11 +1,31 @@
-from pystrictdef.strict import checkType
+import socket
 
-import pystrictdef.strict as strict
+from wsocket._wsocket import WSocket
 
-@checkType(int,int)
-def mul(num,l=10):
-  for i in range(1,l+1): 
-    print(i,"x",num,"=",i*num)
-  return ''
+s = input("serveur ou client")
+address = 'localhost'
+port = 5000
 
-print(mul(5,6))
+conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+
+def scmsg(m):
+    print("onmessage sclient", m.decode("utf8"))
+
+
+def cmsg(m):
+    print("onmessage client", m.decode("utf8"))
+
+
+if int(s) == 1:
+    conn.bind((address, port))
+    conn.listen(1)
+    client, address = conn.accept()
+    wclient = WSocket(client)
+    wclient.send("it work")
+    wclient.onmessage(scmsg)
+else:
+    conn.connect((address, port))
+    wclient = WSocket(conn)
+    wclient.onmessage(scmsg)
+    wclient.send("it work")

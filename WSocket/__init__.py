@@ -1,1 +1,3 @@
-__all__ = ['WSocket']
+import wsocket
+
+__all__ = ['wsocket']
